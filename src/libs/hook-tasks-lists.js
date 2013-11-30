@@ -31,7 +31,7 @@ module.exports = function(hookConfig) {
 			data.before.push(item['before']);
 		}
 		if (item['after']) {
-			data.before.push(item['after']);
+			data.after.push(item['after']);
 		}
 	});
 

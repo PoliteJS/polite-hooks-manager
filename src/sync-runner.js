@@ -3,11 +3,20 @@
  * (responsability library)
  */
 
-var MissingHookNameError = require('./errors/missing-hook-name');
-
+// Internal Dependencies
 var getHookTasks = require('./libs/hook-tasks-lists');
+var SyncContext = require('./libs/context-sync');
+
+var MissingHookNameError = require('./errors/missing-hook-name');
+var StopException = require('./errors/stop-exception');
 
 
+
+
+
+/**
+ * Launch hook callbacks with synchronous behavior
+ */
 module.exports.call = function(hookName) {
 
 	if (!hookName) {
@@ -20,9 +29,32 @@ module.exports.call = function(hookName) {
 		var args = Array.prototype.slice.call(arguments);
 		args.shift();
 
-		getHookTasks(this.store[hookName]).fn.forEach(function(fn) {
-			fn.apply(null, args);
-		});
+		// compose execution context
+		var ctx = SyncContext.create();
+		ctx.setContext(this.context);
+
+		// compose sorted tasks
+		var tasks = getHookTasks(this.store[hookName]);
+
+		// BEFORE
+		tasks.before.forEach(callback);
+
+		// cycle through task lists
+		// (handle a stop request)
+		try {
+			tasks.fn.forEach(callback);
+		} catch(e) {
+			if (!e instanceof StopException) {
+				throw e;
+			}
+		}
+
+		// AFTER
+		tasks.after.forEach(callback);
+
+		function callback(fn) {
+			fn.apply(ctx, args);
+		}
 
 	}
 

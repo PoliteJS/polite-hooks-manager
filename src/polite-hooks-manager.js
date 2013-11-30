@@ -76,8 +76,7 @@ var PoliteHooksAsyncRunner = require('./async-runner');
 // ---[[   C L A S S   D E F I N I T I O N   ]] --- //
 // ------------------------------------------------ //
 
-var PoliteHookManager = extend(
-	{},
+var PoliteHookManager = extend({},
 	PoliteHooksRegister,
 	PoliteHooksSyncRunner,
 	PoliteHooksAsyncRunner
@@ -85,9 +84,11 @@ var PoliteHookManager = extend(
 
 PoliteHookManager.init = function() {
 
-	this.defaultPriority = 100;
+	this.defaultPriority = 0;
 
 	this.store = {};
+
+	this.context = null;
 
 	return this;
 
@@ -97,7 +98,9 @@ PoliteHookManager.setDefaultPriority = function(priority) {
 	this.defaultPriority = priority;
 };
 
-
+PoliteHookManager.setContext = function(context) {
+	this.context = context;
+};
 
 
 
