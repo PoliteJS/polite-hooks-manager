@@ -26,8 +26,6 @@ module.exports.parallel = function() {
 	return this.executeAsyncStuff('each', Array.prototype.slice.call(arguments));
 };
 
-
-
 module.exports.executeAsyncStuff = function(mode, args) {
 
 	if (!args.length) {
@@ -55,7 +53,6 @@ module.exports.executeAsyncStuff = function(mode, args) {
 
 		// AFTER
 		var eachSeriesCallback = function() {
-			console.log(ctx.hasStopped());
 			tasks.after.forEach(function(fn) {
 				fn.apply(ctx, args);
 			});

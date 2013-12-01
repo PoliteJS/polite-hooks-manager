@@ -46,7 +46,11 @@
  *	 // global hook synchronous callbacks
  *	 // being executed before/after asynchronous implementations.
  *   before: function() {},
- *   after: runction() {}
+ *   after: runction() {
+ *     if (this.hasStopped()) {
+ *       console.log('not all callbacks have been executed!');
+ *     }
+ *   }
  * });
  * ```
  *
@@ -65,8 +69,8 @@ var extend = require('extend');
 
 // Internal Dependencies
 var PoliteHooksRegister = require('./register');
-var PoliteHooksSyncRunner = require('./sync-runner');
-var PoliteHooksAsyncRunner = require('./async-runner');
+var PoliteHooksSyncRunner = require('./runner-sync');
+var PoliteHooksAsyncRunner = require('./runner-async');
 
 
 
@@ -96,10 +100,12 @@ PoliteHookManager.init = function() {
 
 PoliteHookManager.setDefaultPriority = function(priority) {
 	this.defaultPriority = priority;
+	return this;
 };
 
 PoliteHookManager.setContext = function(context) {
 	this.context = context;
+	return this;
 };
 
 
